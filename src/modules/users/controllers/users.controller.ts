@@ -20,13 +20,4 @@ export class UsersController {
   async create(@Body() createUserDto: CreateUserDto) {
     return await this.usersService.create(createUserDto);
   }
-
-  @Get()
-  @Roles(Role.ADMIN)
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  async getAll(@Request() req) {
-    const { user } = req;
-
-    return await this.usersService.findOneByEmail(user.email);
-  }
 }
