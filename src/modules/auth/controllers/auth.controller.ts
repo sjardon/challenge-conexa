@@ -7,22 +7,29 @@ import {
   HttpStatus,
   Post,
   UseGuards,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { AuthService } from '../services/auth.service';
 import { LocalAuthGuard } from '../guards/local-auth.guard';
 import { JwtAuthGuard } from '../guards/jwt-auth.guard';
+import { LoginDto } from '../dto/login.dto';
 
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
 
-  @UseGuards(LocalAuthGuard)
+  // @UseGuards(LocalAuthGuard)
   @HttpCode(HttpStatus.OK)
   @Post('login')
-  signIn(@Request() req) {
-    // return req.user;
+  async login(@Body() loginDto: LoginDto) {
+    const { email, password } = loginDto;
+    const user = await this.authService.validateUser(email, password);
 
-    return this.authService.signIn(req.user);
+    if (!user) {
+      throw new UnauthorizedException();
+    }
+
+    return this.authService.login(user);
   }
 
   @UseGuards(JwtAuthGuard)
