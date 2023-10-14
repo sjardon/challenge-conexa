@@ -7,10 +7,11 @@ COPY package.json package-lock.json ./
 
 RUN mkdir data
 # RUN set -x && npm --production=false
+RUN npm install --omit=dev
 
 COPY . .
 
-RUN npm install --omit=dev
+RUN npm run build
 
 # Production Image
 FROM node:lts-alpine as main
