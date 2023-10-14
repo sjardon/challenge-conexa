@@ -10,8 +10,8 @@ on:
         description: 'Image version'
         required: true
 env:
-  REGISTRY: 'your-digitalocean-registry-container-url'
-  IMAGE_NAME: 'your-docker-image-name'
+  REGISTRY: 'registry.digitalocean.com/conexa-challenge'
+  IMAGE_NAME: 'conexa_service'
 
 jobs:
   build_and_push:
