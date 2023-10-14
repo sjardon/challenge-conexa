@@ -28,9 +28,10 @@ export class AuthService {
   }
 
   login(user: UserEntity): AuthEntity {
-    const { id, email, password } = user;
+    const { id, email, role, password } = user;
     const auth = new AuthEntity();
-    auth.access_token = this.jwtService.sign({ email, sub: id });
+
+    auth.access_token = this.jwtService.sign({ email, role, sub: id });
 
     return auth;
   }
