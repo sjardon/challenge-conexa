@@ -31,8 +31,10 @@ export class UsersService {
 
     createUserDto.password = await bcrypt.hash(password, 10);
     const userToCreate = this.usersRepository.create(createUserDto);
+    const { password: createdPassword, ...createdUser } =
+      await this.usersRepository.save(userToCreate);
 
-    return await this.usersRepository.save(userToCreate);
+    return createdUser;
   }
 
   async findOneByEmail(email: string): Promise<UserEntity> {

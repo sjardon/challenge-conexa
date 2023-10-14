@@ -1,11 +1,13 @@
 import { Transform } from 'class-transformer';
-import { IsDate, IsNotEmpty, IsString } from 'class-validator';
+import { IsDate, IsNotEmpty, IsString, MaxLength } from 'class-validator';
 
 export class CreateMovieDto {
+  @MaxLength(100)
   @IsString()
   @IsNotEmpty()
   title: string;
 
+  @MaxLength(400)
   @IsString()
   description: string;
 

@@ -5,7 +5,7 @@ import { UserEntity } from '../entities/user.entity';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
-import { BadRequestException } from '@nestjs/common';
+import { BadRequestException, NotFoundException } from '@nestjs/common';
 
 const userRepositoryToken = getRepositoryToken(UserEntity);
 describe('UsersService', () => {
@@ -51,51 +51,80 @@ describe('UsersService', () => {
     fakeUsers = [];
   });
 
-  it('should be defined', () => {
+  it('Should be defined', () => {
     expect(service).toBeDefined();
   });
 
-  it('should create a user', async () => {
-    const toCreateUser = {
-      password: 'strongPass',
-      email: 's@mail.com',
-    } as CreateUserDto;
+  describe('create', () => {
+    it('Should create a user', async () => {
+      const toCreateUser = {
+        password: 'strongPass',
+        email: 's@mail.com',
+      } as CreateUserDto;
 
-    const createdUser = await service.create(toCreateUser);
+      const createdUser = await service.create(toCreateUser);
 
-    expect(createdUser).toBeDefined();
-  });
+      expect(createdUser).toBeDefined();
+    });
 
-  it('should hash the password', async () => {
-    const inputPassword = 'strongpassword';
-    const toCreateUser = {
-      password: inputPassword,
-      email: 's@mail.com',
-    } as CreateUserDto;
+    it('Should hash the password', async () => {
+      const inputPassword = 'strongpassword';
+      const toCreateUser = {
+        password: inputPassword,
+        email: 's@mail.com',
+      } as CreateUserDto;
 
-    jest.spyOn(bcrypt, 'hash');
-    const createdUser = await service.create(toCreateUser);
-    expect(createdUser.password).not.toBe(inputPassword);
-    expect(bcrypt.hash).toBeCalled();
-  });
+      jest.spyOn(bcrypt, 'hash');
+      const createdUser = await service.create(toCreateUser);
+      expect(createdUser.password).not.toBe(inputPassword);
+      expect(bcrypt.hash).toBeCalled();
+    });
 
-  it('should not create duplicated users', async () => {
-    expect.assertions(1);
+    it('Should not create duplicated users', async () => {
+      expect.assertions(1);
 
-    const toCreateUser = {
-      password: 'strongPass',
-      email: 's@mail.com',
-    } as CreateUserDto;
-    console.log(fakeUsers);
+      const toCreateUser = {
+        password: 'strongPass',
+        email: 's@mail.com',
+      } as CreateUserDto;
+      console.log(fakeUsers);
 
-    await service.create(toCreateUser);
-
-    const expectedError = new BadRequestException('User already exists');
-
-    try {
       await service.create(toCreateUser);
-    } catch (error) {
-      expect(error).toEqual(expectedError);
-    }
+
+      const expectedError = new BadRequestException('User already exists');
+
+      try {
+        await service.create(toCreateUser);
+      } catch (error) {
+        expect(error).toEqual(expectedError);
+      }
+    });
+  });
+
+  describe('findOneByEmail', () => {
+    it('Should find a user', async () => {
+      const email = 's@mail.com';
+      const toCreateUser = {
+        email,
+        password: 'strongPass',
+      } as CreateUserDto;
+      console.log(fakeUsers);
+
+      await service.create(toCreateUser);
+      const foundUser = await service.findOneByEmail(email);
+
+      expect(foundUser).toBeDefined();
+    });
+
+    it('Should throw an error if the user is not found', async () => {
+      expect.assertions(1);
+      const email = 's@mail.com';
+      const expectedError = new NotFoundException(`User [${email}] not found`);
+      try {
+        await service.findOneByEmail(email);
+      } catch (error) {
+        expect(error).toEqual(expectedError);
+      }
+    });
   });
 });

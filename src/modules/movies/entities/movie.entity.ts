@@ -7,7 +7,8 @@ import {
   BaseEntity,
 } from 'typeorm';
 
-export class ReducedMovieEntity extends BaseEntity {
+@Entity('movie')
+export class MovieEntity extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id!: string;
 
@@ -16,10 +17,7 @@ export class ReducedMovieEntity extends BaseEntity {
 
   @Column()
   description: string;
-}
 
-@Entity('movie')
-export class MovieEntity extends ReducedMovieEntity {
   @Column()
   director: string;
 
