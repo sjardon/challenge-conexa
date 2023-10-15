@@ -24,7 +24,7 @@ WORKDIR /app
 EXPOSE 3000
 
 COPY package.json package-lock.json ./
-RUN touch .env
+# RUN touch .env
 
 RUN mkdir data
 RUN npm install --omit=dev

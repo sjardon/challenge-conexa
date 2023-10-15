@@ -49,7 +49,7 @@ jobs:
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSHKEY }}
           passphrase: ${{ secrets.PASSPHRASE }}
-          envs: IMAGE_NAME,REGISTRY,{{ secrets.DIGITALOCEAN_ACCESS_TOKEN }},GITHUB_SHA
+          envs: IMAGE_NAME,REGISTRY,{{ secrets.DIGITALOCEAN_ACCESS_TOKEN }},GITHUB_SHA,{{ secrets.POSTGRES_USER }},{{ secrets.POSTGRES_PASSWORD }},{{ secrets.POSTGRES_DB }},{{ secrets.POSTGRES_HOST }},{{ secrets.POSTGRES_PORT }},{{ secrets.POSTGRES_SSL }}
           script: |
             docker login -u ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }} -p ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }} registry.digitalocean.com
             docker stop $(echo $IMAGE_NAME)
@@ -57,4 +57,11 @@ jobs:
             docker run -d \
             --restart always \
             --name $(echo $IMAGE_NAME) \
-            $(echo $REGISTRY)/$(echo $IMAGE_NAME):$(echo $GITHUB_SHA | head -c7)
+            $(echo $REGISTRY)/$(echo $IMAGE_NAME):$(echo $GITHUB_SHA | head -c7) \
+            --env POSTGRES_USER=${{ secrets.POSTGRES_USER }} \
+            --env POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }} \
+            --env POSTGRES_DB=${{ secrets.POSTGRES_DB }} \
+            --env POSTGRES_HOST=${{ secrets.POSTGRES_HOST }} \
+            --env POSTGRES_PORT=${{ secrets.POSTGRES_PORT }} \
+            --env POSTGRES_SSL=${{ secrets.POSTGRES_SSL }} \
+            --env JWT_SECRET=${{ secrets.JWT_SECRET }}
