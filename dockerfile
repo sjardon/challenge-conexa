@@ -31,8 +31,9 @@ RUN npm install --omit=dev
 
 COPY --from=builder /app/dist ./dist
 
-RUN echo $POSTGRES_CA_CERT_CONTENT >> $POSTGRES_CA_CERT
 RUN echo $POSTGRES_CA_CERT_CONTENT
 RUN echo $POSTGRES_CA_CERT
+RUN touch $POSTGRES_CA_CERT
+RUN echo $POSTGRES_CA_CERT_CONTENT >> $POSTGRES_CA_CERT
 
 CMD ["npm", "run", "start:prod"]
