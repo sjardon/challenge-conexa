@@ -4,6 +4,7 @@ import { RolesGuard } from './modules/auth/guards/roles.guard';
 import { ValidationPipe, VersioningType } from '@nestjs/common';
 import { HttpExceptionFilter } from './common/response/exeption-filters/http-exeption.filter';
 import { DefaultInterceptor } from './common/response/interceptors/default.interceptor';
+import { CommandFactory } from 'nest-commander';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -15,6 +16,7 @@ async function bootstrap() {
     defaultVersion: '1',
     prefix: 'v',
   });
+
   await app.listen(3000);
 }
 bootstrap();

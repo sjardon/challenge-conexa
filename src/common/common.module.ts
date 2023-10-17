@@ -5,6 +5,7 @@ import { DatabaseModule } from './database/database.module';
 import configs from '../configs';
 import { DatabaseService } from './database/services/database.service';
 import { HelpersModule } from './helpers/helpers.module';
+import { CommandModule } from 'nestjs-command';
 
 @Module({
   controllers: [],
@@ -26,6 +27,7 @@ import { HelpersModule } from './helpers/helpers.module';
     }),
     DatabaseModule,
     HelpersModule,
+    CommandModule,
   ],
 })
 export class CommonModule {}
