@@ -8,7 +8,7 @@ import * as bcrypt from 'bcrypt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from '../entities/user.entity';
 import { Repository } from 'typeorm';
-import { Role } from 'src/modules/auth/constants/role.enum';
+import { Role } from '../../auth/constants/role.enum';
 
 @Injectable()
 export class UsersService {

@@ -75,8 +75,12 @@ describe('UsersService', () => {
       } as CreateUserDto;
 
       jest.spyOn(bcrypt, 'hash');
+      const createUserSpy = jest.spyOn(usersRepository, 'create');
+
       const createdUser = await service.create(toCreateUser);
-      expect(createdUser.password).not.toBe(inputPassword);
+      expect(createUserSpy.mock.results[0].value.password).not.toBe(
+        inputPassword,
+      );
       expect(bcrypt.hash).toBeCalled();
     });
 
@@ -87,7 +91,6 @@ describe('UsersService', () => {
         password: 'strongPass',
         email: 's@mail.com',
       } as CreateUserDto;
-      console.log(fakeUsers);
 
       await service.create(toCreateUser);
 
@@ -108,7 +111,6 @@ describe('UsersService', () => {
         email,
         password: 'strongPass',
       } as CreateUserDto;
-      console.log(fakeUsers);
 
       await service.create(toCreateUser);
       const foundUser = await service.findOneByEmail(email);
