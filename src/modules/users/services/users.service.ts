@@ -8,6 +8,7 @@ import * as bcrypt from 'bcrypt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from '../entities/user.entity';
 import { Repository } from 'typeorm';
+import { Role } from 'src/modules/auth/constants/role.enum';
 
 @Injectable()
 export class UsersService {
@@ -31,6 +32,32 @@ export class UsersService {
 
     createUserDto.password = await bcrypt.hash(password, 10);
     const userToCreate = this.usersRepository.create(createUserDto);
+    const { password: createdPassword, ...createdUser } =
+      await this.usersRepository.save(userToCreate);
+
+    return createdUser;
+  }
+
+  async createAdmin(createUserDto: CreateUserDto) {
+    const { email, password } = createUserDto;
+
+    const userExist = await this.usersRepository.findOne({
+      where: {
+        email,
+      },
+    });
+
+    if (userExist) {
+      throw new BadRequestException('User already exists');
+    }
+
+    let userToCreate = {
+      ...createUserDto,
+      password: await bcrypt.hash(password, 10),
+      role: Role.ADMIN,
+    };
+
+    userToCreate = this.usersRepository.create(userToCreate);
     const { password: createdPassword, ...createdUser } =
       await this.usersRepository.save(userToCreate);
 
