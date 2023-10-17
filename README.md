@@ -1,4 +1,4 @@
-# rotunda-exercise
+# Conexa challenge
 
 Repositorio para el ejercicio de Conexa. Espero que disfruten la revisión!
 
